@@ -135,18 +135,18 @@ import os
 from asyncio import Semaphore
 
 # ================= CONFIG =================
-API_KEY = "AIzaSyBDvIpmFmvviJXehXtjRWRgtu4Qu3hyf0k"
+API_KEY = "AIzaSyAm_amRwIv2DZehvGYk7cLLw6k2eFHoMv0"
 MODEL_NAME = "models/gemini-2.5-flash"  # Free tier
-INPUT_FILE = "magazine_dataset.json"
-OUTPUT_FILE = "articles_with_summary_magazine.json"
-CHECKPOINT_FILE = "checkpoint_magazine.json"
+INPUT_FILE = "newspaper_dataset3.json"
+OUTPUT_FILE = "articles_with_summary_newspaper3.json"
+CHECKPOINT_FILE = "checkpoint_paper.json"
 MAX_PARALLEL = 3  # Number of simultaneous requests
 
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel(MODEL_NAME)
 
 # ================= PROMPT BUILDER (CUSTOM) =================
-def build_prompt(text, source_type="magazine"):
+def build_prompt(text, source_type="newspaper"):
     text = text.strip()
     if "purchase a subscription" in text.lower():
         return "The article content is unavailable. Provide a 2-sentence generic summary."
@@ -158,13 +158,18 @@ def build_prompt(text, source_type="magazine"):
         return f"Summarize this text in about half its original length with a descriptive tone:\n{text}"
 
     else:
-        return f"Summarize this text with full explanations suitable for history learners:\n{text}"
+        return (
+            "Summarize this book excerpt at about 80% of its original depth. "
+            "Keep all key ideas, context, and meaning, but express them in a shorter and clearer way. "
+            "Do not expand or add new information. Maintain a moderate level of detail.\n"
+            f"{text}"
+        )
 
 # ================= SUMMARIZE FUNCTION =================
 async def summarize_one(article, sem: Semaphore, max_retries=10):
     async with sem:
         content = article.get("content", "")
-        source_type = article.get("source_type", "magazine")  # Use your source_type field
+        source_type = article.get("source_type", "newspaper")  # Use your source_type field
         prompt = build_prompt(content, source_type)
         wait_time = 5
 

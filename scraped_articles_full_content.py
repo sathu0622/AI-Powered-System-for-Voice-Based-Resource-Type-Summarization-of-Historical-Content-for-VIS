@@ -12,7 +12,7 @@ USER_AGENT = (
 )
 
 # ---------- READ URL LIST ----------
-with open("magazine_url.txt", "r", encoding="utf-8") as f:
+with open("newspaper_url3.txt", "r", encoding="utf-8") as f:
     urls = [line.strip() for line in f if line.strip()]
 
 output_data = []
@@ -125,18 +125,18 @@ for i, url in enumerate(urls, start=1):
         content = ai_clean(content)
 
         output_data.append({
-            "source_type": "magazine",
+            "source_type": "newspaper",
             "title": title,
             "content": content,
             "target_summary": "",
-            "summary_depth": "medium",
+            "summary_depth": "short",
         })
 
     except Exception as e:
         print(f"❌ Failed to scrape {url}: {e}")
 
 # ---------- SAVE TO JSON ----------
-with open("magazine_dataset.json", "w", encoding="utf-8") as f:
+with open("newspaper_dataset3.json", "w", encoding="utf-8") as f:
     json.dump(output_data, f, ensure_ascii=False, indent=4)
 
-print(f"\n✅ Done! Saved {len(output_data)} full articles to magazine_dataset.json")
+print(f"\n✅ Done! Saved {len(output_data)} full articles to newspaper_dataset3.json")
